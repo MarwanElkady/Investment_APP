@@ -1,155 +1,5 @@
-// Full Tharwa Investments App in one Java file
-import java.util.*;
-
-interface UserManagement {
-    boolean register(String name, String email, String phone, String password, String[] preferences);
-    boolean login(String email, String password);
-}
-
-interface Investment {
-    double calculateCurrentValue();
-    double calculateROI();
-}
-
-interface BankAccount {
-    boolean syncAccount();
-    double getBalance();
-    String getBankName();
-}
-
-class User {
-    private String name;
-    private String email;
-    private String phone;
-    private String password;
-    private List<String> preferences;
-
-    public User(String name, String email, String phone, String password, List<String> preferences) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-        this.preferences = preferences;
-    }
-
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-}
-
-class InvestmentPortfolio {
-    private List<Investment> assets = new ArrayList<>();
-
-    public void addInvestment(Investment inv) {
-        assets.add(inv);
-    }
-
-    public void removeInvestment(int index) {
-        if (index >= 0 && index < assets.size()) {
-            assets.remove(index);
-        }
-    }
-
-    public List<Investment> getAssets() {
-        return assets;
-    }
-
-    public double calculateZakat() {
-        double zakat = 0;
-        for (Investment inv : assets) {
-            zakat += inv.calculateCurrentValue() * 0.025;
-        }
-        return zakat;
-    }
-}
-
-class RealEstateInvestment implements Investment {
-    private String location;
-    private double price;
-    private double rentalIncome;
-
-    public RealEstateInvestment(String location, double price, double rentalIncome) {
-        this.location = location;
-        this.price = price;
-        this.rentalIncome = rentalIncome;
-    }
-
-    public double calculateCurrentValue() {
-        return price + rentalIncome * 12;
-    }
-
-    public double calculateROI() {
-        return (rentalIncome * 12) / price;
-    }
-
-    @Override
-    public String toString() {
-        return "RealEstate: " + location + ", Price: " + price + ", Income: " + rentalIncome;
-    }
-}
-
-class BasicBankAccount implements BankAccount {
-    private String bankName;
-    private String accountNumber;
-    private double balance;
-
-    public BasicBankAccount(String bankName, String accountNumber) {
-        this.bankName = bankName;
-        this.accountNumber = accountNumber;
-        this.balance = Math.random() * 100000; // simulate fetch
-    }
-
-    public boolean syncAccount() {
-        this.balance = Math.random() * 100000;
-        return true;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-}
-
-class AuthService implements UserManagement {
-    private Map<String, User> users = new HashMap<>();
-
-    public boolean register(String name, String email, String phone, String password, String[] preferences) {
-        if (users.containsKey(email)) return false;
-        User newUser = new User(name, email, phone, password, Arrays.asList(preferences));
-        users.put(email, newUser);
-        System.out.println("Registered successfully! Redirecting to login...");
-        return true;
-    }
-
-    public boolean login(String email, String password) {
-        if (!users.containsKey(email)) return false;
-        return users.get(email).getPassword().equals(password);
-    }
-}
-
-class PortfolioManager {
-    private InvestmentPortfolio portfolio = new InvestmentPortfolio();
-
-    public void addRealEstate(String location, double price, double rental) {
-        RealEstateInvestment r = new RealEstateInvestment(location, price, rental);
-        portfolio.addInvestment(r);
-    }
-
-    public void removeAssetByIndex(int index) {
-        portfolio.removeInvestment(index);
-    }
-
-    public List<Investment> listAssets() {
-        return portfolio.getAssets();
-    }
-
-    public double calculateZakat() {
-        return portfolio.calculateZakat();
-    }
-}
-
+import java.util.ArrayList;
+import java.util.List;
 public class MainApp {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -170,8 +20,14 @@ public class MainApp {
             String phone = sc.nextLine();
             System.out.print("Enter password: ");
             String pass = sc.nextLine();
-            System.out.print("Enter preferences (comma separated): ");
-            String[] prefs = sc.nextLine().split(",");
+            System.out.println("Select investment interests (1=Gold, 2=Real Estate, 3=Crypto), separated by commas:");
+            String[] input = sc.nextLine().split(",");
+            List<String> prefs = new ArrayList<>();
+            for (String opt : input) {
+                if (opt.trim().equals("1")) prefs.add("Gold");
+                if (opt.trim().equals("2")) prefs.add("Real Estate");
+                if (opt.trim().equals("3")) prefs.add("Crypto");
+            }
             auth.register(name, email, phone, pass, prefs);
         }
 
@@ -184,22 +40,64 @@ public class MainApp {
         if (auth.login(loginEmail, loginPass)) {
             boolean exit = false;
             while (!exit) {
-                System.out.println("\n1. Add Real Estate\n2. View Zakat\n3. View Portfolio\n4. Remove Asset\n5. Connect Bank Account\n6. View Bank Balances\n7. Exit");
+                System.out.println("\n1. Add Asset\n2. View Zakat\n3. View Portfolio\n4. Edit Asset\n5. Remove Asset\n6. Connect Bank Account\n7. View Bank Balances\n8. Edit Bank Balance\n9. Exit");
                 int action = sc.nextInt();
                 sc.nextLine();
 
                 switch (action) {
                     case 1:
-                        System.out.print("Enter location: ");
-                        String loc = sc.nextLine();
-                        System.out.print("Enter price: ");
-                        double pr = sc.nextDouble();
-                        System.out.print("Enter rental income: ");
-                        double ri = sc.nextDouble();
-                        manager.addRealEstate(loc, pr, ri);
+                        System.out.println("Choose asset type: 1) Real Estate 2) Gold 3) Crypto");
+                        int type = sc.nextInt();
+                        sc.nextLine();
+                        if (type == 1) {
+                            System.out.print("Enter location: ");
+                            String loc = sc.nextLine();
+                            System.out.print("Enter price: ");
+                            double pr = sc.nextDouble();
+                            System.out.print("Enter rental income: ");
+                            double ri = sc.nextDouble();
+                            manager.addRealEstate(loc, pr, ri);
+                        } else if (type == 2) {
+                            System.out.print("Enter grams: ");
+                            double grams = sc.nextDouble();
+                            System.out.print("Enter price per gram: ");
+                            double ppg = sc.nextDouble();
+                            manager.addGold(grams, ppg);
+                        } else if (type == 3) {
+                            System.out.print("Enter coin name: ");
+                            String coin = sc.nextLine();
+                            System.out.print("Enter units: ");
+                            double units = sc.nextDouble();
+                            System.out.print("Enter price per unit: ");
+                            double unitPrice = sc.nextDouble();
+                            manager.addCrypto(coin, units, unitPrice);
+                        }
                         break;
                     case 2:
-                        System.out.println("Zakat due: " + manager.calculateZakat() + " EGP");
+                        double investmentsTotal = 0;
+                        for (Investment inv : manager.listAssets()) {
+                            investmentsTotal += inv.calculateCurrentValue();
+                        }
+                        
+                        double bankTotal = 0;
+                        for (BankAccount account : manager.getBankAccounts()) {
+                            bankTotal += account.getBalance();
+                        }
+                        
+                        double totalAssets = investmentsTotal + bankTotal;
+                        double nisab = 85000; // EGP equivalent of 85g gold
+                        double zakatDue = totalAssets >= nisab ? totalAssets * 0.025 : 0;
+                        
+                        System.out.println("\n=== Zakah Calculation ===");
+                        System.out.printf("Investments Value: %.2f EGP%n", investmentsTotal);
+                        System.out.printf("Bank Accounts Value: %.2f EGP%n", bankTotal);
+                        System.out.printf("Total Assets: %.2f EGP%n", totalAssets);
+                        System.out.printf("Nisab Threshold: %.2f EGP%n", nisab);
+                        if (totalAssets >= nisab) {
+                            System.out.printf("Zakah Due (2.5%%): %.2f EGP%n", zakatDue);
+                        } else {
+                            System.out.println("No Zakah due (Total assets below Nisab)");
+                        }
                         break;
                     case 3:
                         List<Investment> assets = manager.listAssets();
@@ -208,26 +106,44 @@ public class MainApp {
                         }
                         break;
                     case 4:
+                        System.out.print("Enter asset index to edit: ");
+                        int edx = sc.nextInt();
+                        sc.nextLine();
+                        manager.editAsset(edx, sc);
+                        break;
+                    case 5:
                         System.out.print("Enter index to remove: ");
                         int idx = sc.nextInt();
                         manager.removeAssetByIndex(idx);
                         break;
-                    case 5:
+                    case 6:
                         System.out.print("Enter bank name: ");
                         String bank = sc.nextLine();
                         System.out.print("Enter account number: ");
                         String acc = sc.nextLine();
-                        BankAccount b = new BasicBankAccount(bank, acc);
-                        b.syncAccount();
-                        bankAccounts.add(b);
-                        System.out.println("Bank account connected.");
-                        break;
-                    case 6:
-                        for (BankAccount ba : bankAccounts) {
-                            System.out.println(ba.getBankName() + ": " + ba.getBalance() + " EGP");
-                        }
+                        System.out.print("Enter starting balance: ");
+                        double bal = sc.nextDouble();
+                        BankAccount b = new BasicBankAccount(bank, acc, bal);
+                        manager.addBankAccount(b);
+                        System.out.println("Bank account added.");
                         break;
                     case 7:
+                        for (int i = 0; i < manager.getBankAccounts().size(); i++) {
+                            BankAccount ba = manager.getBankAccounts().get(i);
+                            System.out.println(i + ": " + ba.getBankName() + " - Balance: " + ba.getBalance() + " EGP");
+                        }
+                        break;
+                    case 8:
+                        System.out.print("Enter bank index to edit: ");
+                        int bidx = sc.nextInt();
+                        if (bidx >= 0 && bidx < manager.getBankAccounts().size()) {
+                            System.out.print("Enter new balance: ");
+                            double nb = sc.nextDouble();
+                            manager.getBankAccounts().get(bidx).setBalance(nb);
+                            System.out.println("Balance updated.");
+                        }
+                        break;
+                    case 9:
                         exit = true;
                         break;
                     default:
