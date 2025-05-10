@@ -1,11 +1,25 @@
+/**
+ * The {@code MainApp} class serves as the entry point for the Tharwa Investments application.
+ * It provides a console-based interface for user authentication, portfolio management, and bank account
+ * management. Users can sign up, log in, add/edit/remove investments, connect bank accounts, view balances,
+ * and calculate zakat (charitable contribution) based on their total assets.
+ */
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
 public class MainApp {
+    /**
+     * The main method that runs the Tharwa Investments application.
+     * It handles user authentication via {@code AuthService}, manages investment and bank account operations
+     * via {@code PortfolioManager}, and provides a menu-driven interface for user interactions.
+     *
+     * 
+     */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         AuthService auth = new AuthService();
         PortfolioManager manager = new PortfolioManager();
-        List<BankAccount> bankAccounts = new ArrayList<>();
 
         System.out.println("Welcome to Tharwa Investments\n1. Sign Up\n2. Log In");
         int choice = sc.nextInt();
@@ -85,7 +99,7 @@ public class MainApp {
                         }
                         
                         double totalAssets = investmentsTotal + bankTotal;
-                        double nisab = 85000; // EGP equivalent of 85g gold
+                        double nisab = 425000; // EGP equivalent of 85g gold
                         double zakatDue = totalAssets >= nisab ? totalAssets * 0.025 : 0;
                         
                         System.out.println("\n=== Zakah Calculation ===");
