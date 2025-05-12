@@ -1,4 +1,12 @@
 /**
+ * Tharwa Investments App
+ * A console-based investment and bank management application.
+ * Supports Gold, Real Estate, and Crypto asset tracking and Zakat calculation.
+ *
+ * Author: Seif Wael - Mohamed Waleed - Marwan Ibraheem
+ * Version: 1.0
+ */
+/**
  * The {@code MainApp} class serves as the entry point for the Tharwa Investments application.
  * It provides a console-based interface for user authentication, portfolio management, and bank account
  * management. Users can sign up, log in, add/edit/remove investments, connect bank accounts, view balances,

@@ -92,25 +92,4 @@ public class PortfolioManager {
         return portfolio.getAssets();
     }
 
-    /**
-     * Calculates the zakat (charitable contribution) due based on the total value of investments
-     * and bank account balances. Zakat is calculated as 2.5% of the total assets if the total
-     * exceeds the nisab threshold (425,000 EGP, equivalent to 85g of gold); otherwise, no zakat is due.
-     *
-     * @return the zakat amount as a {@code double}, or 0 if the total assets are below the nisab threshold
-     */
-    public double calculateZakat() {
-        double investmentsTotal = portfolio.calculateZakat();
-
-        double bankTotal = 0;
-        for (BankAccount account : bankAccounts) {
-            bankTotal += account.getBalance();
-        }
-
-        double nisab = 425000;
-        double totalAssets = investmentsTotal + bankTotal;
-
-        if (totalAssets < nisab) return 0;
-        return totalAssets * 0.025;
-    }
 }
