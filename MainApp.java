@@ -3,7 +3,7 @@
  * A console-based investment and bank management application.
  * Supports Gold, Real Estate, and Crypto asset tracking and Zakat calculation.
  *
- * Author: Seif Wael - Mohamed Waleed - Marwan Ibraheem
+ * Author(s): Seif Wael - Mohamed Waleed - Marwan Ibraheem
  * Version: 1.0
  */
 /**
